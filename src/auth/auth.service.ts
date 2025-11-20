@@ -41,8 +41,6 @@ export class AuthService {
       name: dto.name,
     });
 
-    console.log('useruseruseruser', user);
-
     const { password, refreshToken, ...result } = user;
     return result;
   }

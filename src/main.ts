@@ -26,47 +26,52 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  // Security: CORS configuration from environment variable
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
     methods: 'GET,POST,PUT,DELETE,PATCH',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization',
   });
 
-  // Swagger configuration
-  const config = new DocumentBuilder()
-    .setTitle('Habit Tracker API')
-    .setDescription('API documentation for Habit Tracker application')
-    .setVersion('1.0')
-    .addTag('auth', 'Authentication endpoints')
-    .addTag('habits', 'Habit management endpoints')
-    .addTag('users', 'User endpoints')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token',
-        in: 'header',
-      },
-      'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controllers
-    )
-    .build();
+  // Security: Swagger only enabled in development environment
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Habit Tracker API')
+      .setDescription('API documentation for Habit Tracker application')
+      .setVersion('1.0')
+      .addTag('auth', 'Authentication endpoints')
+      .addTag('habits', 'Habit management endpoints')
+      .addTag('users', 'User endpoints')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'JWT',
+          description: 'Enter JWT token',
+          in: 'header',
+        },
+        'JWT-auth',
+      )
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document, {
-    customSiteTitle: 'Habit Tracker API Docs',
-    customfavIcon: 'https://nestjs.com/img/logo-small.svg',
-    customCss: '.swagger-ui .topbar { display: none }',
-  });
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api-docs', app, document, {
+      customSiteTitle: 'Habit Tracker API Docs',
+      customfavIcon: 'https://nestjs.com/img/logo-small.svg',
+      customCss: '.swagger-ui .topbar { display: none }',
+    });
+
+    console.log(
+      `📚 API Documentation: http://localhost:${process.env.PORT ?? 3000}/api-docs`,
+    );
+  }
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(
-    `Application is running on: http://localhost:${process.env.PORT ?? 3000}`,
+    `🚀 Application running: http://localhost:${process.env.PORT ?? 3000}`,
   );
-  console.log(
-    `API Documentation available at: http://localhost:${process.env.PORT ?? 3000}/api-docs`,
-  );
+  console.log(`🔒 Environment: ${process.env.NODE_ENV || 'development'}`);
 }
 bootstrap();

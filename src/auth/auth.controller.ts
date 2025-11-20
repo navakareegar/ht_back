@@ -14,6 +14,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { LocalAuthGuard } from './guards/local.guard';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { getCookieOptions } from '../config/cookie.config';
 
 @Controller('auth')
 export class AuthController {
@@ -41,12 +42,8 @@ export class AuthController {
 
     const { access_token, refresh_token } = await this.authService.login(user);
 
-    res.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    // Security: Using centralized secure cookie configuration
+    res.cookie('refresh_token', refresh_token, getCookieOptions());
 
     return {
       access_token,
@@ -66,13 +63,8 @@ export class AuthController {
       const { access_token, refresh_token: new_refresh_token } =
         await this.authService.refreshTokens(refreshToken);
 
-      res.cookie('refresh_token', new_refresh_token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        maxAge: 60 * 1000,
-        path: '/',
-      });
+      // Security: Using centralized secure cookie configuration
+      res.cookie('refresh_token', new_refresh_token, getCookieOptions());
 
       return { access_token };
     } catch (error) {
@@ -103,13 +95,8 @@ export class AuthController {
       }
     }
 
-    // Clear refresh token cookie
-    res.clearCookie('refresh_token', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/',
-    });
+    // Security: Clear refresh token cookie with same options used to set it
+    res.clearCookie('refresh_token', getCookieOptions());
 
     return { message: 'Logged out successfully' };
   }
