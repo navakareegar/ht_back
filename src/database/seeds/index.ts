@@ -3,21 +3,21 @@ import { AppDataSource } from '../../data-source';
 import { seedUsers } from './user.seed';
 
 async function runSeeds() {
-  console.log('🌱 Starting database seeding...\n');
+  console.log('Starting database seeding...\n');
 
   try {
     await AppDataSource.initialize();
-    console.log('✓ Database connection established\n');
+    console.log('Database connection established\n');
 
     await seedUsers(AppDataSource);
 
-    console.log('\n🎉 All seeds completed successfully!');
+    console.log('\nAll seeds completed successfully!');
   } catch (error) {
-    console.error('❌ Error during seeding:', error);
+    console.error('Error during seeding:', error);
     process.exit(1);
   } finally {
     await AppDataSource.destroy();
-    console.log('\n✓ Database connection closed');
+    console.log('\nDatabase connection closed');
     process.exit(0);
   }
 }
