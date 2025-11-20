@@ -13,7 +13,7 @@ import { databaseConfig } from './config/database.config';
       ...databaseConfig,
       autoLoadEntities: true,
       migrations: ['dist/migrations/*.js'],
-      migrationsRun: false, // Set to true to auto-run migrations on app start
+      migrationsRun: false,
     }),
     UserModule,
     AuthModule,

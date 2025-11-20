@@ -5,14 +5,12 @@ import { User } from '../../user/user.entity';
 export async function seedUsers(dataSource: DataSource) {
   const userRepository = dataSource.getRepository(User);
 
-  // Check if users already exist
   const existingUsers = await userRepository.count();
   if (existingUsers > 0) {
     console.log('Users already exist, skipping seed...');
     return;
   }
 
-  // Create seed users
   const users = [
     {
       email: 'admin@example.com',
@@ -34,9 +32,8 @@ export async function seedUsers(dataSource: DataSource) {
   for (const userData of users) {
     const user = userRepository.create(userData);
     await userRepository.save(user);
-    console.log(`✓ Created user: ${userData.email}`);
+    console.log(`Created user: ${userData.email}`);
   }
 
-  console.log('\n✅ User seeding completed!');
+  console.log('\nUser seeding completed!');
 }
-

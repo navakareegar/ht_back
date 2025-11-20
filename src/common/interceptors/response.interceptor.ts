@@ -23,7 +23,6 @@ export class ResponseInterceptor<T>
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
 
-    // Get custom message from decorator if exists
     const customMessage = this.reflector.get<string>(
       RESPONSE_MESSAGE_KEY,
       context.getHandler(),

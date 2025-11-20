@@ -42,7 +42,6 @@ export class AuthController {
 
     const { access_token, refresh_token } = await this.authService.login(user);
 
-    // Security: Using centralized secure cookie configuration
     res.cookie('refresh_token', refresh_token, getCookieOptions());
 
     return {
@@ -63,7 +62,6 @@ export class AuthController {
       const { access_token, refresh_token: new_refresh_token } =
         await this.authService.refreshTokens(refreshToken);
 
-      // Security: Using centralized secure cookie configuration
       res.cookie('refresh_token', new_refresh_token, getCookieOptions());
 
       return { access_token };
@@ -81,21 +79,16 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Request() req, @Response({ passthrough: true }) res) {
-    // Get token from header if present
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
       try {
-        // Extract user from token if available
         const token = authHeader.split(' ')[1];
         const payload = await this.authService.verifyToken(token);
         await this.authService.logout(payload.sub);
-      } catch (error) {
-        // Token invalid or expired, continue with logout anyway
-      }
+      } catch (error) {}
     }
 
-    // Security: Clear refresh token cookie with same options used to set it
     res.clearCookie('refresh_token', getCookieOptions());
 
     return { message: 'Logged out successfully' };

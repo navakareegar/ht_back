@@ -9,10 +9,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Global exception filter for error handling
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Global response interceptor for standardized responses
   const reflector = app.get(Reflector);
   app.useGlobalInterceptors(new ResponseInterceptor(reflector));
 
@@ -26,7 +24,6 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  // Security: CORS configuration from environment variable
   app.enableCors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
     methods: 'GET,POST,PUT,DELETE,PATCH',
@@ -34,7 +31,6 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization',
   });
 
-  // Security: Swagger only enabled in development environment
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('Habit Tracker API')
@@ -64,14 +60,14 @@ async function bootstrap() {
     });
 
     console.log(
-      `📚 API Documentation: http://localhost:${process.env.PORT ?? 3000}/api-docs`,
+      `API Documentation: http://localhost:${process.env.PORT ?? 3000}/api-docs`,
     );
   }
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(
-    `🚀 Application running: http://localhost:${process.env.PORT ?? 3000}`,
+    `Application running: http://localhost:${process.env.PORT ?? 3000}`,
   );
-  console.log(`🔒 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 }
 bootstrap();
