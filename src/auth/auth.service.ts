@@ -95,6 +95,14 @@ export class AuthService {
     }
   }
 
+  async verifyToken(token: string) {
+    try {
+      return this.jwtService.verify(token);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+  }
+
   async logout(userId: string) {
     await this.userService.updateRefreshToken(userId, null);
     return { message: 'Logged out successfully' };

@@ -86,12 +86,24 @@ export class AuthController {
     return this.authService.getProfile(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Request() req, @Response({ passthrough: true }) res) {
-    await this.authService.logout(req.user.id);
+    // Get token from header if present
+    const authHeader = req.headers.authorization;
 
+    if (authHeader) {
+      try {
+        // Extract user from token if available
+        const token = authHeader.split(' ')[1];
+        const payload = await this.authService.verifyToken(token);
+        await this.authService.logout(payload.sub);
+      } catch (error) {
+        // Token invalid or expired, continue with logout anyway
+      }
+    }
+
+    // Clear refresh token cookie
     res.clearCookie('refresh_token', {
       httpOnly: true,
       secure: false,

@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class InitialSchema1763667369002 implements MigrationInterface {
-  name = 'InitialSchema1763667369002';
+export class InitialSchema1763671432800 implements MigrationInterface {
+  name = 'InitialSchema1763671432800';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Enable uuid-ossp extension
+    // Enable UUID extension
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
 
     // Create user table
@@ -45,7 +45,7 @@ export class InitialSchema1763667369002 implements MigrationInterface {
             )
         `);
 
-    // Add foreign key constraints
+    // Add foreign key: habit.userId -> user.id
     await queryRunner.query(`
             ALTER TABLE "habit"
             ADD CONSTRAINT "FK_habit_userId"
@@ -55,6 +55,7 @@ export class InitialSchema1763667369002 implements MigrationInterface {
             ON UPDATE NO ACTION
         `);
 
+    // Add foreign key: habit_log.habitId -> habit.id
     await queryRunner.query(`
             ALTER TABLE "habit_log"
             ADD CONSTRAINT "FK_habit_log_habitId"
@@ -74,7 +75,7 @@ export class InitialSchema1763667369002 implements MigrationInterface {
       `ALTER TABLE "habit" DROP CONSTRAINT "FK_habit_userId"`,
     );
 
-    // Drop tables
+    // Drop tables in reverse order
     await queryRunner.query(`DROP TABLE "habit_log"`);
     await queryRunner.query(`DROP TABLE "habit"`);
     await queryRunner.query(`DROP TABLE "user"`);
