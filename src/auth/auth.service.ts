@@ -28,7 +28,7 @@ export class AuthService {
     return isPasswordValid ? user : null;
   }
 
-  async register(dto: RegisterDto) {
+  async signup(dto: RegisterDto) {
     const existingUser = await this.userService.findByEmail(dto.email);
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
@@ -40,6 +40,8 @@ export class AuthService {
       password: hashedPassword,
       name: dto.name,
     });
+
+    console.log('useruseruseruser', user);
 
     const { password, refreshToken, ...result } = user;
     return result;

@@ -25,7 +25,7 @@ export class User {
   refreshToken: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  date: Date;
 
   @OneToMany(() => Habit, (habit) => habit.user)
   habits: Habit[];

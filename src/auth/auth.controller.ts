@@ -19,10 +19,10 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('register')
+  @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  async signup(@Body() dto: RegisterDto) {
+    return this.authService.signup(dto);
   }
 
   @Post('login')
@@ -80,29 +80,18 @@ export class AuthController {
     }
   }
 
-  /**
-   * Get current user profile (Protected route)
-   * GET /auth/profile
-   * Requires: Bearer token in Authorization header
-   */
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Request() req) {
     return this.authService.getProfile(req.user.id);
   }
 
-  /**
-   * Logout user (Protected route)
-   * POST /auth/logout
-   * Requires: Bearer token in Authorization header
-   */
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Request() req, @Response({ passthrough: true }) res) {
     await this.authService.logout(req.user.id);
 
-    // Clear refresh token cookie
     res.clearCookie('refresh_token', {
       httpOnly: true,
       secure: false,

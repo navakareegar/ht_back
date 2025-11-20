@@ -14,9 +14,11 @@ import { HabitModule } from './habit/habit.module';
       port: 5432,
       username: 'postgres',
       password: 'postgres',
-      database: 'postgres',
+      database: 'habit-tracker',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production', // Only in development
+      migrations: ['dist/migrations/*.js'],
+      migrationsRun: false, // Set to true to auto-run migrations on app start
     }),
     UserModule,
     AuthModule,

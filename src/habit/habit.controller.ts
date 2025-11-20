@@ -58,7 +58,7 @@ export class HabitController {
     @Query('weekStart') weekStart: string,
   ) {
     if (!weekStart) {
-      throw new Error('weekStart query parameter is required');
+      throw new BadRequestException('weekStart query parameter is required');
     }
 
     const weekStartDate = new Date(weekStart);
@@ -95,7 +95,7 @@ export class HabitController {
       result = await this.habitService.toggleDone(
         id,
         req.user.id,
-        updateHabitDto.date || new Date(),
+        updateHabitDto?.date || new Date(),
         updateHabitDto.done ?? false,
       );
     }

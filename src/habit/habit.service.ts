@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Habit } from './habit.entity';
 import { HabitLog } from './habit-log.entity';
 import { formatDateForAPI } from 'src/util/common';
+import { ResourceNotFoundException } from '../common/exceptions/custom.exception';
 
 @Injectable()
 export class HabitService {
@@ -45,7 +46,7 @@ export class HabitService {
         return {
           ...habit,
           done: lastLog?.done ?? false,
-          created_at: lastLog?.date ?? null,
+          date: lastLog?.date ?? null,
         };
       }),
     );
@@ -58,7 +59,7 @@ export class HabitService {
       where: { id, userId },
     });
     if (!habit) {
-      throw new NotFoundException('Habit not found');
+      throw new ResourceNotFoundException('Habit', id);
     }
     return habit;
   }
@@ -74,7 +75,7 @@ export class HabitService {
     return {
       ...habit,
       done: lastLog?.done ?? false,
-      created_at: lastLog?.date ?? null,
+      date: lastLog?.date ?? null,
     };
   }
 
@@ -109,7 +110,7 @@ export class HabitService {
     } else {
       const habitLog = this.habitLogRepository.create({
         habitId: id,
-        date,
+        date: date,
         done,
       });
       await this.habitLogRepository.save(habitLog);
