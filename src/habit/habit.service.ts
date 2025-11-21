@@ -46,7 +46,6 @@ export class HabitService {
         return {
           ...habit,
           done: lastLog?.done ?? false,
-          date: lastLog?.date ?? null,
         };
       }),
     );
