@@ -393,14 +393,4 @@ REFRESH_TOKEN_EXPIRES_IN=7d
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the UNLICENSED License.
-
-## 👥 Support
-
-For support, email your-email@example.com or create an issue in the repository.
-
----
-
 **Happy Coding! 🚀**
